@@ -4,34 +4,39 @@ import styled from "styled-components";
 // import TextField from "@atlaskit/textfield";
 // import Form, { Field } from "@atlaskit/form";
 // import Button from "@atlaskit/button";
+import Cookies from "universal-cookie";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import logo from "./img/logo.png";
-export const Dashboard = (user: any) => {
+const cookies = new Cookies();
+const cerrarSesion = () => {
+	cookies.remove("user");
+	volver();
+};
+const volver = () => {
+	// eslint-disable-next-line no-restricted-globals
+	location.href = "http://localhost:3000";
+};
+export const Dashboard = () => {
 	return (
 		<>
 			<BarraUsuario>
-				<Logo>
-					<img src={logo} alt="logo" />
-				</Logo>
-				<Link to="/signupuser">hola</Link>
+				<Logo src={logo} alt="logo" onClick={() => volver()} />
+				<div>{cookies.get("user") ? cookies.get("user").usuario : ""}</div>
+				{cookies.get("user") ? <div onClick={() => cerrarSesion()}>Cerrar sesión</div> : <></>}
 			</BarraUsuario>
 		</>
 	);
 };
 const BarraUsuario = styled.div({
-	backgroundColor: "#1a5276",
-	height: "60px",
+	backgroundColor: "#9AD3F8",
+	height: "70px",
 	display: "flex"
 });
-const Logo = styled.div({
-	borderRadius: "60%",
-	backgroundColor: "white",
-	width: "55px",
-	height: "55px",
+const Logo = styled.img({
 	display: "flex",
-	alignItems: "flex-end",
-	justifyContent: "center",
-	img: {
-		height: "40px"
+	height: "60px",
+	margin: "5px 0px 0px 5px",
+	":hover": {
+		cursor: "pointer"
 	}
 });

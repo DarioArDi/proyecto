@@ -41,12 +41,6 @@ export const SignUpUser = () => {
 				`http://127.0.0.1:80/carrero/newUser.php?name=${data.username}&pass=${data.pass1}&mail=${data.mail}&age=${data.age}`
 			);
 			console.log("resultado");
-			const user = {
-				name: data.name
-			};
-			const cookies = new Cookies();
-			cookies.set("user", data, { path: "/" });
-			console.log(cookies.get("user"));
 			// eslint-disable-next-line no-restricted-globals
 			location.href = "http://localhost:3000";
 		}

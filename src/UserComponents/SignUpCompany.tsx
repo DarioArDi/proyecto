@@ -18,6 +18,22 @@ const deffault: userErrorType = {
 	mail: "bien",
 	pass: "bien"
 };
+const companyType = {
+	shop: false,
+	builder: false
+};
+const changeCompanyType = (value: string, checked: boolean) => {
+	console.log(value, checked);
+	switch (value) {
+		case "tienda":
+			companyType.shop = checked;
+			break;
+		case "obrera":
+			companyType.builder = checked;
+			break;
+	}
+	console.log(companyType);
+};
 export const SignUpCompany = () => {
 	const [userErrors, setUserErrors] = useState(deffault);
 	const crearUsuario = async (data: any) => {
@@ -31,11 +47,13 @@ export const SignUpCompany = () => {
 		};
 		if (errores.username === "bien" && errores.mail === "bien" && errores.pass === "bien") {
 			console.log("hola buenas que tal");
-			// var resultado;
-			// const respuesta = await fetch(
-			// 	`http://127.0.0.1:80/carrero/login.php?nombre=${data.username}&contrasena=${data.password}&contrasena=${data.contrasena1}`
-			// );
-			// resultado = await respuesta.json();
+			const stringCompanyType = JSON.stringify(companyType);
+			fetch(
+				`http://127.0.0.1:80/carrero/newCompany.php?name=${data.username}&pass=${data.pass1}&mail=${data.mail}&cif=${data.cif}&type=${stringCompanyType}`
+			);
+			console.log("resultado", stringCompanyType);
+			// eslint-disable-next-line no-restricted-globals
+			location.href = "http://localhost:3000";
 		}
 		setUserErrors(errores);
 	};
@@ -89,8 +107,14 @@ export const SignUpCompany = () => {
 						value="tienda"
 						label="Soy una empresa que vende productos u ofrece servicios"
 						name="tienda"
+						onChange={(event) => changeCompanyType(event.target.value, event.target.checked)}
 					/>
-					<Checkbox value="obrera" label="Soy una empresa obrera" name="obrera" />
+					<Checkbox
+						value="obrera"
+						label="Soy una empresa obrera"
+						name="obrera"
+						onChange={(event) => changeCompanyType(event.target.value, event.target.checked)}
+					/>
 					<Button type="submit">Registrarse</Button>
 				</form>
 			)}

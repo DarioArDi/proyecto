@@ -9,58 +9,51 @@ import { SignUpUser } from "./UserComponents/SignUpUser";
 import { Dashboard } from "./Dashboard";
 import { CreateReport } from "./ReportComponents/CreateReport";
 import { SignUpCompany } from "./UserComponents/SignUpCompany";
+import { ShowMyReports } from "./ReportComponents/ShowMyReports";
+import { SignUpWho } from "./UserComponents/SingUpWho";
+import { ClientMainMenu } from "./MainMenuComponents/ClientsMenu";
+import { CompanyMainMenu } from "./MainMenuComponents/CompanyMenu";
+import { SeeReports } from "./ReportComponents/SeeReports";
 const cookies = new Cookies();
 function App() {
-	const [db, setDb] = useState([]);
-	const [user, setUser] = useState(cookies.get("user"));
-	const [isLogged, setIsLogged] = useState(Boolean);
-
-	console.log(cookies.get("user"));
-	useEffect(() => {
-		const pillarDatos = async () => {
-			fetch("http://127.0.0.1:80/carrero/prueba.php")
-				.then((datos) => datos.json())
-				.then((datosJson) => {
-					setDb(datosJson);
-					console.log("datos", datosJson);
-				});
-		};
-		pillarDatos();
-		const itIsLogged = () => {
-			fetch("http://127.0.0.1:80/carrero/islogged.php")
-				.then((data) => data.json())
-				.then((dataJson) => {
-					setDb(dataJson);
-					// setIsLogged(dataJson);
-					console.log("buenas", dataJson);
-				});
-		};
-		itIsLogged();
-	}, []);
+	console.log("cookie", cookies.get("user"));
 
 	return (
 		<>
 			<Router>
-				<Dashboard user={user} />
+				<Dashboard />
 				<Route exact path="/">
-					{isLogged ? <Redirect to="/signupcompany" /> : <SignIn />}
+					{cookies.get("user") ? <Redirect to="/mainmenu" /> : <SignIn />}
 				</Route>
-				<Route path="/mainmenu"></Route>
+				<Route path="/mainmenu">
+					{cookies.get("user") && cookies.get("user").type === "cliente" ? (
+						<ClientMainMenu />
+					) : (
+						<CompanyMainMenu />
+					)}
+				</Route>
+				<Route path="/signupwho">
+					<SignUpWho />
+				</Route>
 				<Route path="/signupuser">
 					<SignUpUser />
 				</Route>
 				<Route exact path="/signupcompany">
 					<SignUpCompany />
 				</Route>
-				<Route path="/myreports"></Route>
-				<Route path="/reports"></Route>
+				<Route path="/myreports">
+					<ShowMyReports />
+				</Route>
+				<Route path="/reports">
+					<SeeReports />
+				</Route>
 				<Route path="/createreport">
 					<CreateReport />
 				</Route>
 				<Route path="/createoffer"></Route>
 				<Route path="/store"></Route>
+				{/* <MostrarDatos datos={db} /> */}
 			</Router>
-			{/* <MostrarDatos datos={db} /> */}
 		</>
 	);
 }
