@@ -6,20 +6,28 @@ import Form, { Field } from "@atlaskit/form";
 import Button from "@atlaskit/button";
 import { RadioGroup } from "@atlaskit/radio";
 import { OptionsPropType } from "@atlaskit/radio/types";
-
-const CreateTheReport = () => {};
+import Cookies from "universal-cookie";
+const cookies = new Cookies();
+const CreateTheReport = (data: any, tipo: string) => {
+	console.log(data.street, tipo, cookies.get("user").idusuario);
+	fetch(
+		`http://127.0.0.1:80/carrero/newReport.php?street=${data.street}&type=${tipo}&user=${
+			cookies.get("user").idusuario
+		}`
+		// eslint-disable-next-line no-restricted-globals
+	).then(() => (location.href = "http://localhost:3000/createreport"));
+};
 
 const options: OptionsPropType = [
 	{ name: "tipo", value: "sign", label: "Señal" },
 	{ name: "tipo", value: "road", label: "Carretera" }
 ];
-let formData = new FormData();
 export const CreateReport = () => {
 	const [selectedOption, setSelectedOption] = useState("");
 	return (
 		<>
-			<h1>Crear reportes</h1>
-			<Form onSubmit={(data) => console.log("form data", data, selectedOption)}>
+			<h1>Publicar reportes</h1>
+			<Form onSubmit={(data) => CreateTheReport(data, selectedOption)}>
 				{({ formProps }) => (
 					<form {...formProps}>
 						<Field name="street" label="Calle/Carretera" isRequired>

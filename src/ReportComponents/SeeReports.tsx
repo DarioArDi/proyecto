@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { BrowserRouter as Router, Switch, Route, Link, Redirect } from "react-router-dom";
-import Cookies from "universal-cookie";
 import Form, { Field } from "@atlaskit/form";
 import TextField from "@atlaskit/textfield";
 import { Checkbox } from "@atlaskit/checkbox";
 import Button from "@atlaskit/button";
+import Cookies from "universal-cookie";
 const cookies = new Cookies();
-
 const filtrarDatos = (datos: any, filter: any) => {
 	let datosFiltrados: any[] = [];
 	datos.map((row: any) => {
@@ -40,28 +39,6 @@ const filtrarDatos = (datos: any, filter: any) => {
 	});
 	return datosFiltrados;
 };
-const MostrarDatos = ({ datos }: any) => {
-	console.log("mostrar", datos);
-	if (datos.length !== undefined) {
-		return (
-			<>
-				<table>
-					{datos.map((row: any) => {
-						return (
-							<tr key={row.idReporte} id={row.idReporte}>
-								<td>{row.direction}</td>
-								<td>{row.tipo === "road" ? "Carretera" : "Señal"}</td>
-								<td>{row.pending === "1" ? "Pendiente" : "Resuelto"}</td>
-							</tr>
-						);
-					})}
-				</table>
-			</>
-		);
-	} else {
-		return <div>:(</div>;
-	}
-};
 const filterDefault = {
 	street: "",
 	sign: false,
@@ -70,23 +47,32 @@ const filterDefault = {
 	resolved: false
 };
 export const SeeReports = () => {
-	const [reportes, setReportes] = useState<any[]>([]);
 	const [filter, setFilter] = useState(filterDefault);
+	const [reportes, setReportes] = useState<any[]>([]);
 	const pillarDatos = async () => {
-		console.log("datos", cookies.get("user").idEmpresa);
-		const respuesta = await fetch(`http://127.0.0.1:80/carrero/verreportes.php`)
+		fetch(`http://127.0.0.1:80/carrero/verreportes.php`)
 			.then((datos) => datos.json())
 			.then((datosJson) => {
-				console.log("datos", datosJson);
 				setReportes(datosJson);
 			});
-		console.log("resultado", respuesta);
 	};
 	useEffect(() => {
 		pillarDatos();
 	}, []);
+	const cambiarReporte = (idReporte: Number, estado: String, idUsuario: Number) => {
+		console.log("datos1", idReporte, estado);
+		if (estado === "1") {
+			estado = "0";
+		} else {
+			estado = "1";
+		}
+		console.log("datos2", idReporte, estado);
+		fetch(
+			`http://127.0.0.1:80/carrero/cambiarEstadoReporte.php?idReporte=${idReporte}&estado=${estado}&idUsuario=${idUsuario}`
+		).then(() => pillarDatos());
+	};
 	const changeFilterCheckbox = (value: string, checked: boolean) => {
-		console.log(value, checked);
+		// console.log(value, checked);
 		switch (value) {
 			case "road":
 				setFilter({
@@ -114,7 +100,7 @@ export const SeeReports = () => {
 				break;
 		}
 	};
-	console.log(filter);
+	// console.log(filter);
 
 	// var datos: any[] = [];
 	const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -153,7 +139,23 @@ export const SeeReports = () => {
 					onChange={(event) => changeFilterCheckbox(event.target.value, event.target.checked)}
 				/>
 			</div>
-			<MostrarDatos datos={filtrarDatos(reportes, filter)} />
+			{/* <MostrarDatos datos={filtrarDatos(reportes, filter)} /> */}
+			<table>
+				<tbody>
+					{filtrarDatos(reportes, filter).map((row: any) => {
+						return (
+							<tr key={row.idReporte} id={row.idReporte}>
+								<td>{row.direction}</td>
+								<td>{row.tipo === "road" ? "Carretera" : "Señal"}</td>
+								<td>{row.pending === "1" ? "Pendiente" : "Resuelto"}</td>
+								<td onClick={() => cambiarReporte(row.idReporte, row.pending, row.idUsuario)}>
+									Cambiar estado
+								</td>
+							</tr>
+						);
+					})}
+				</tbody>
+			</table>
 		</Container>
 	);
 };

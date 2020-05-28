@@ -5,11 +5,6 @@ import TextField from "@atlaskit/textfield";
 import Form, { Field } from "@atlaskit/form";
 import Button from "@atlaskit/button";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
-// .then((datos) => datos.json())
-// 	.then((datosJson) => {
-// 		userdata=datosJson;
-// 		console.log("datos", datosJson);
-// 	})
 const login = async ({ data }: any) => {
 	console.log("datos", data.username);
 	let userdata: any;
@@ -32,20 +27,54 @@ const login = async ({ data }: any) => {
 };
 export const SignIn = () => {
 	return (
-		<Form onSubmit={(data) => login({ data })}>
-			{({ formProps }) => (
-				<form {...formProps}>
-					<Field name="username" label="Usuario" isRequired>
-						{({ fieldProps }) => <TextField {...fieldProps} />}
-					</Field>
-					<Field name="password" label="Constraseña" isRequired>
-						{({ fieldProps }) => <TextField {...fieldProps} type="password" />}
-					</Field>
-					<br />
-					<Link to="/signupwho">Crear una cuenta</Link>
-					<Button type="submit">Entrar</Button>
-				</form>
-			)}
-		</Form>
+		<Container>
+			<Titulo>Iniciar Sesión</Titulo>
+			<Form onSubmit={(data) => login({ data })}>
+				{({ formProps }) => (
+					<Formulario {...formProps}>
+						<Field name="username" label="Usuario" isRequired>
+							{({ fieldProps }) => <TextField {...fieldProps} />}
+						</Field>
+						<Field name="password" label="Constraseña" isRequired>
+							{({ fieldProps }) => <TextField {...fieldProps} type="password" />}
+						</Field>
+						<br />
+						<Button style={{ display: "block" }} type="submit">
+							Entrar
+						</Button>
+
+						<Enlace to="/signupwho">Crear una cuenta</Enlace>
+					</Formulario>
+				)}
+			</Form>
+		</Container>
 	);
 };
+const Container = styled.div({
+	margin: "0px auto 0px auto",
+	width: "340px",
+	display: "flex",
+	justifyContent: "center",
+	flexDirection: "column"
+});
+const Titulo = styled.h1({
+	textAlign: "center",
+	// fontSize: "30px",
+	fontFamily: "Didot",
+	margin: "30px 0px 0px 0px"
+});
+const Formulario = styled.form({
+	display: "flex",
+	flexDirection: "column"
+});
+const Enlace = styled(Link)({
+	margin: "15px 0 0 0",
+	textDecoration: "none",
+	textAlign: "center",
+	":visited": {
+		color: "#90D0F0"
+	},
+	":link": {
+		color: "#9AD3F8"
+	}
+});

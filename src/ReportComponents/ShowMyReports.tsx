@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useReducer } from "react";
 import styled from "styled-components";
 import { BrowserRouter as Router, Switch, Route, Link, Redirect } from "react-router-dom";
 import Cookies from "universal-cookie";
@@ -6,9 +6,13 @@ import Form, { Field } from "@atlaskit/form";
 import TextField from "@atlaskit/textfield";
 import { Checkbox } from "@atlaskit/checkbox";
 import Button from "@atlaskit/button";
+import { CSSTransition } from "react-transition-group";
+import { ModalReport } from "./ModalReport";
+import { initialReportState } from "./inicialReducerState";
+import { reducer } from "./reportsReducer";
+import { ReportsActions } from "./reportsActions";
+import { ReportRow } from "./Report";
 const cookies = new Cookies();
-let reportes: any[] = [];
-
 const filtrarDatos = (datos: any, filter: any) => {
 	let datosFiltrados: any[] = [];
 	datos.map((row: any) => {
@@ -41,7 +45,6 @@ const filtrarDatos = (datos: any, filter: any) => {
 	});
 	return datosFiltrados;
 };
-
 const filterDefault = {
 	street: "",
 	sign: false,
@@ -54,22 +57,19 @@ export const ShowMyReports = () => {
 	const [reportes, setReportes] = useState<any[]>([]);
 	const pillarDatos = async () => {
 		console.log("datos", cookies.get("user").idusuario);
-		const respuesta = await fetch(
-			`http://127.0.0.1:80/carrero/vermisreportes.php?iduser=${cookies.get("user").idusuario}`
-		)
+		fetch(`http://127.0.0.1:80/carrero/vermisreportes.php?iduser=${cookies.get("user").idusuario}`)
 			.then((datos) => datos.json())
 			.then((datosJson) => {
 				console.log("datos", datosJson);
 				setReportes(datosJson);
 			});
-		console.log("resultado", respuesta);
 	};
 	useEffect(() => {
 		pillarDatos();
 	}, []);
-	const eliminarReporte = (idReporte: Number) => {
-		console.log("datos", cookies.get("user").idusuario);
-		fetch(`http://127.0.0.1:80/carrero/eliminarReportes.php?idReporte=${idReporte}`);
+	const eliminarReporte = (idReporte: number) => {
+		console.log("datos", idReporte);
+		fetch(`http://127.0.0.1/carrero/eliminarReporte.php?idReporte=${idReporte}`);
 		pillarDatos();
 	};
 	const changeFilterCheckbox = (value: string, checked: boolean) => {
@@ -102,8 +102,6 @@ export const ShowMyReports = () => {
 		}
 	};
 	console.log(filter);
-
-	// var datos: any[] = [];
 	const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setFilter({
 			...filter,
@@ -141,17 +139,8 @@ export const ShowMyReports = () => {
 				/>
 			</div>
 			<table>
-				{filtrarDatos(reportes, filter).map((row: any) => {
-					return (
-						<tr key={row.idReporte} id={row.idReporte}>
-							<td>{row.direction}</td>
-							<td>{row.tipo === "road" ? "Carretera" : "Señal"}</td>
-							<td>{row.pending === "1" ? "Pendiente" : "Resuelto"}</td>
-							<td>
-								<div onclick={eliminarReporte(row.idReporte)}>Eliminar</div>
-							</td>
-						</tr>
-					);
+				{filtrarDatos(reportes, filter).map((row: any, i: number) => {
+					return <ReportRow row={row} key={i} />;
 				})}
 			</table>
 		</Container>
