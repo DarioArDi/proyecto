@@ -25,11 +25,11 @@ const options: OptionsPropType = [
 export const CreateReport = () => {
 	const [selectedOption, setSelectedOption] = useState("");
 	return (
-		<>
+		<Container>
 			<h1>Publicar reportes</h1>
 			<Form onSubmit={(data) => CreateTheReport(data, selectedOption)}>
 				{({ formProps }) => (
-					<form {...formProps}>
+					<Formulario {...formProps}>
 						<Field name="street" label="Calle/Carretera" isRequired>
 							{({ fieldProps }) => <TextField {...fieldProps} />}
 						</Field>
@@ -49,9 +49,20 @@ export const CreateReport = () => {
 							Sube una foto de la falla
 						</input> */}
 						<Button type="submit">Reportar</Button>
-					</form>
+					</Formulario>
 				)}
 			</Form>
-		</>
+		</Container>
 	);
 };
+const Container = styled.div({
+	margin: "0px auto 0px auto",
+	width: "340px",
+	display: "flex",
+	justifyContent: "center",
+	flexDirection: "column"
+});
+const Formulario = styled.form({
+	display: "flex",
+	flexDirection: "column"
+});

@@ -5,6 +5,7 @@ import TextField from "@atlaskit/textfield";
 import Form, { Field } from "@atlaskit/form";
 import Button from "@atlaskit/button";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import { CommonTitle } from "../Styles/commonStyles";
 const login = async ({ data }: any) => {
 	console.log("datos", data.username);
 	let userdata: any;
@@ -28,7 +29,7 @@ const login = async ({ data }: any) => {
 export const SignIn = () => {
 	return (
 		<Container>
-			<Titulo>Iniciar Sesión</Titulo>
+			<CommonTitle>Iniciar Sesión</CommonTitle>
 			<Form onSubmit={(data) => login({ data })}>
 				{({ formProps }) => (
 					<Formulario {...formProps}>
@@ -42,7 +43,6 @@ export const SignIn = () => {
 						<Button style={{ display: "block" }} type="submit">
 							Entrar
 						</Button>
-
 						<Enlace to="/signupwho">Crear una cuenta</Enlace>
 					</Formulario>
 				)}
@@ -56,12 +56,6 @@ const Container = styled.div({
 	display: "flex",
 	justifyContent: "center",
 	flexDirection: "column"
-});
-const Titulo = styled.h1({
-	textAlign: "center",
-	// fontSize: "30px",
-	fontFamily: "Didot",
-	margin: "30px 0px 0px 0px"
 });
 const Formulario = styled.form({
 	display: "flex",

@@ -6,6 +6,9 @@ import TextField from "@atlaskit/textfield";
 import { Checkbox } from "@atlaskit/checkbox";
 import Button from "@atlaskit/button";
 import Cookies from "universal-cookie";
+import road from "../img/road.jpg";
+import sign from "../img/sign.jpg";
+import { CommonContainer } from "../Styles/commonStyles";
 const cookies = new Cookies();
 const filtrarDatos = (datos: any, filter: any) => {
 	let datosFiltrados: any[] = [];
@@ -110,56 +113,120 @@ export const SeeReports = () => {
 		});
 	};
 	return (
-		<Container>
-			<div>
+		<CostomContainer>
+			<FilterTitleContainer>
 				<h4>Filtrar datos</h4>
-				<TextField name="username" label="Usuario" isRequired onChange={handleOnChange} />
-				<Checkbox
-					value="sign"
-					name="sign"
-					label="Quitar señales"
-					onChange={(event) => changeFilterCheckbox(event.target.value, event.target.checked)}
-				/>
-				<Checkbox
-					value="road"
-					name="road"
-					label="Quitar carreteras"
-					onChange={(event) => changeFilterCheckbox(event.target.value, event.target.checked)}
-				/>
-				<Checkbox
-					value="pending"
-					name="pending"
-					label="Quitar pendientes"
-					onChange={(event) => changeFilterCheckbox(event.target.value, event.target.checked)}
-				/>
-				<Checkbox
-					value="resolved"
-					name="resolved"
-					label="Quitar resuetos"
-					onChange={(event) => changeFilterCheckbox(event.target.value, event.target.checked)}
-				/>
-			</div>
+				<div>
+					<label>Filtrar por nombre</label>
+					<TextField name="filter" onChange={handleOnChange} />
+				</div>
+				<CheckboxContainer>
+					<TypeCheckboxes>
+						<Checkbox
+							value="sign"
+							name="sign"
+							label="Quitar señales"
+							onChange={(event) => changeFilterCheckbox(event.target.value, event.target.checked)}
+						/>
+						<Checkbox
+							value="road"
+							name="road"
+							label="Quitar carreteras"
+							onChange={(event) => changeFilterCheckbox(event.target.value, event.target.checked)}
+						/>
+					</TypeCheckboxes>
+					<StatusCheckboxes>
+						<Checkbox
+							value="pending"
+							name="pending"
+							label="Quitar pendientes"
+							onChange={(event) => changeFilterCheckbox(event.target.value, event.target.checked)}
+						/>
+						<Checkbox
+							value="resolved"
+							name="resolved"
+							label="Quitar resuetos"
+							onChange={(event) => changeFilterCheckbox(event.target.value, event.target.checked)}
+						/>
+					</StatusCheckboxes>
+				</CheckboxContainer>
+			</FilterTitleContainer>
 			{/* <MostrarDatos datos={filtrarDatos(reportes, filter)} /> */}
-			<table>
-				<tbody>
-					{filtrarDatos(reportes, filter).map((row: any) => {
-						return (
-							<tr key={row.idReporte} id={row.idReporte}>
-								<td>{row.direction}</td>
-								<td>{row.tipo === "road" ? "Carretera" : "Señal"}</td>
-								<td>{row.pending === "1" ? "Pendiente" : "Resuelto"}</td>
-								<td onClick={() => cambiarReporte(row.idReporte, row.pending, row.idUsuario)}>
-									Cambiar estado
-								</td>
-							</tr>
-						);
-					})}
-				</tbody>
-			</table>
-		</Container>
+			<ReportsContainer>
+				{filtrarDatos(reportes, filter).map((row: any) => {
+					return (
+						<Container key={row.idReporte} id={row.idReporte}>
+							{row.tipo === "road" ? <img src={road} alt="img" /> : <img src={sign} alt="img" />}
+							<div style={{ backgroundColor: "#61cffa" }}>
+								<div>
+									<span>Calle:</span>
+									<div>{row.direction}</div>
+								</div>
+								<div>
+									<span>Estado:</span>
+									<div>{row.pending === "1" ? "Pendiente" : "Resuelto"}</div>
+								</div>
+								<Estado onClick={() => cambiarReporte(row.idReporte, row.pending, row.idUsuario)}>
+									<div>Cambiar estado</div>
+								</Estado>
+							</div>
+						</Container>
+					);
+				})}
+			</ReportsContainer>
+		</CostomContainer>
 	);
 };
-
+const CostomContainer = styled(CommonContainer)({
+	width: "890px",
+	"@media (max-width: 900px)": {
+		width: "500px"
+	}
+});
+const CheckboxContainer = styled.div({
+	display: "flex"
+});
+const TypeCheckboxes = styled.div({
+	flex: 1
+});
+const StatusCheckboxes = styled.div({
+	flex: 1
+});
+const ReportsContainer = styled.div({
+	display: "flex",
+	flexWrap: "wrap",
+	justifyContent: "center"
+});
+const FilterTitleContainer = styled.div({
+	width: "370px",
+	margin: "0px auto"
+});
 const Container = styled.div({
-	// display: "flex"
+	margin: "10px",
+	width: "200px",
+	height: "240px",
+	border: "1px solid",
+	borderRadius: "5px",
+	display: "flex",
+	flexDirection: "column",
+	">img": {
+		borderRadius: "5px 5px 0px 0px",
+		width: "190px",
+		height: "120px",
+		margin: "5px"
+	},
+	">div": {
+		margin: "0px 5px 5px 5px",
+		borderRadius: "0px 0px 5px 5px"
+	}
+});
+const Estado = styled.div({
+	display: "flex",
+	justifyContent: "flex-end",
+	div: {
+		margin: "0px 2px 2px 0px",
+		":hover": {
+			cursor: "pointer"
+		}
+	}
 });

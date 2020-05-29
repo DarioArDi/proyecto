@@ -17,11 +17,11 @@ const CreateTheReport = (data: any) => {
 
 export const CreateOffer = () => {
 	return (
-		<>
+		<Container>
 			<h1>Crear reportes</h1>
 			<Form onSubmit={(data) => CreateTheReport(data)}>
 				{({ formProps }) => (
-					<form {...formProps}>
+					<Formulario {...formProps}>
 						<Field name="offer" label="Oferta" isRequired>
 							{({ fieldProps }) => <TextField {...fieldProps} />}
 						</Field>
@@ -31,13 +31,22 @@ export const CreateOffer = () => {
 						<Field name="inventory" label="Cantidad" isRequired>
 							{({ fieldProps }) => <TextField type="number" {...fieldProps} />}
 						</Field>
-						{/* <input type="file" name="imagen">
-							Sube una foto de la falla
-						</input> */}
+						<br />
 						<Button type="submit">Reportar</Button>
-					</form>
+					</Formulario>
 				)}
 			</Form>
-		</>
+		</Container>
 	);
 };
+const Container = styled.div({
+	margin: "0px auto 0px auto",
+	width: "340px",
+	display: "flex",
+	justifyContent: "center",
+	flexDirection: "column"
+});
+const Formulario = styled.form({
+	display: "flex",
+	flexDirection: "column"
+});

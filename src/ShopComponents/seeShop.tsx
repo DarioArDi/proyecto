@@ -6,7 +6,7 @@ import TextField from "@atlaskit/textfield";
 import { Checkbox } from "@atlaskit/checkbox";
 import Button from "@atlaskit/button";
 import Cookies from "universal-cookie";
-import { CommonContainer } from "../Styles/commonStyles";
+import { CommonContainer, PointerTd } from "../Styles/commonStyles";
 let cookies = new Cookies();
 const filtrarDatos = (datos: any, filter: any) => {
 	let datosFiltrados: any[] = [];
@@ -85,7 +85,7 @@ export const SeeShop = (props: any) => {
 		}
 	};
 	return (
-		<CommonContainer>
+		<CustomContainer>
 			{/* <MostrarDatos datos={filtrarDatos(reportes, filter)} /> */}
 			<table>
 				<tbody>
@@ -96,17 +96,28 @@ export const SeeShop = (props: any) => {
 					{shop.map((row: any) => {
 						if (row.inventario > 0) {
 							return (
-								<tr key={row.idOferta} id={row.idOferta}>
+								<CenteredTd key={row.idOferta} id={row.idOferta}>
 									<td>{row.oferta}</td>
 									<td>{row.inventario}</td>
-									<td onClick={() => comprarOferta(row.idOferta)}>Comprar</td>
-								</tr>
+									<PointerTd onClick={() => comprarOferta(row.idOferta)}>Comprar</PointerTd>
+								</CenteredTd>
 							);
 						}
 					})}
 				</tbody>
 			</table>
-			{sinPuntos ? <div>No tienes puntos suficientes</div> : <></>}
-		</CommonContainer>
+			{sinPuntos ? <Alerta>No tienes puntos suficientes</Alerta> : <></>}
+		</CustomContainer>
 	);
 };
+const CenteredTd = styled.tr({
+	textAlign: "center"
+});
+const CustomContainer = styled(CommonContainer)({
+	fontSize: "20px",
+	marginTop: "20px"
+});
+const Alerta = styled.div({
+	color: "Red",
+	textAlign: "center"
+});

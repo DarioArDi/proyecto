@@ -15,7 +15,18 @@ import { SeeReports } from "./ReportComponents/SeeReports";
 import { CreateOffer } from "./ShopComponents/CreateOffer";
 import { SeeShop } from "./ShopComponents/seeShop";
 import { ShopHistory } from "./ShopComponents/ShopHistory";
+import { AdminPannel } from "./AdminCompnents/AdminPannel";
 const cookies = new Cookies();
+const IsAdmin = () => {
+	if (cookies.get("user").usuario === "admin") {
+		// eslint-disable-next-line no-restricted-globals
+		location.href = "http://localhost:3000/admin";
+	} else {
+		// eslint-disable-next-line no-restricted-globals
+		location.href = "http://localhost:3000/mainmenu";
+	}
+	return <></>;
+};
 function App() {
 	const [puntos, setPuntos] = useState(cookies.get("user") ? cookies.get("user").puntos : 0);
 
@@ -24,7 +35,7 @@ function App() {
 		<Router>
 			<Dashboard puntos={puntos} />
 			<Route exact path="/">
-				{cookies.get("user") ? <Redirect to="/mainmenu" /> : <SignIn />}
+				{cookies.get("user") ? <IsAdmin /> : <SignIn />}
 			</Route>
 			<Route path="/mainmenu">
 				{cookies.get("user") && cookies.get("user").type === "cliente" ? (
@@ -59,6 +70,9 @@ function App() {
 			</Route>
 			<Route path="/shophistory">
 				<ShopHistory />
+			</Route>
+			<Route path="/admin">
+				<AdminPannel />
 			</Route>
 		</Router>
 	);
